@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Universal AR Album</title>
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+    <script>
+      AFRAME.registerComponent("mytargets", {
+        init: function () {
+          // సీక్రెట్ ఇక్కడే ఉంది: దీన్ని 50 లేదా 100 పెట్టుకోండి.
+          // మీ దగ్గర తక్కువ ఫోటోలు ఉన్నా పర్లేదు, ఇది పనిచేస్తుంది.
+          const maxTargets = 50;
+
+          const scene = document.querySelector("a-scene");
+          const assets = document.querySelector("a-assets");
+          const array = [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+          ];
+          for (let i = 0; i < maxTargets; i++) {
+            // వీడియో ఎలిమెంట్ క్రియేషన్
+            let video = document.createElement("video");
+            video.setAttribute("id", "vid" + i);
+            video.setAttribute("src", "./videos/" + array[i] + ".mp4");
+            video.setAttribute("loop", "true");
+            video.setAttribute("crossorigin", "anonymous");
+            video.setAttribute("playsinline", "");
+            video.setAttribute("webkit-playsinline", "");
+
+            video.addEventListener("error", function () {});
+
+            assets.appendChild(video);
+
+            let entity = document.createElement("a-entity");
+            entity.setAttribute("mindar-image-target", "targetIndex: " + i);
+
+            let plane = document.createElement("a-plane");
+            plane.setAttribute("src", "#vid" + i);
+            plane.setAttribute("position", "0 0 0");
+            plane.setAttribute("height", "0.674");
+            plane.setAttribute("width", "1");
+            plane.setAttribute("rotation", "0 0 0");
+
+            entity.appendChild(plane);
+            scene.appendChild(entity);
+
+            entity.addEventListener("targetFound", () => {
+              if (video.readyState >= 1) {
+                video.play();
+              }
+            });
+            entity.addEventListener("targetLost", () => {
+              video.pause();
+            });
+          }
+        },
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene
+      mytargets
+      mindar-image="imageTargetSrc: ./targets.mind; maxTrack: 1;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets></a-assets>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    </a-scene>
+  </body>
+</html>
